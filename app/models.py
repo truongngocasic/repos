@@ -18,6 +18,17 @@ class Employee(UserMixin, db.Model):
     username = db.Column(db.String(60), index=True, unique=True)
     first_name = db.Column(db.String(60), index=True)
     last_name = db.Column(db.String(60), index=True)
+    #
+    male = db.Column(db.Boolean, default=True)                                  #True: male, False: female
+    birthday = db.Column(db.DateTime, index=True)    
+    graduate = db.Column(db.String(256), index=True)
+    reward = db.Column(db.String(256), index=True)
+    reward_date = db.Column(db.DateTime, index=True)    
+    salaries = db.relationship('Salary', backref='salary',
+                                lazy='dynamic')
+    #
+    notes = db.Column(db.String(256), index=True)
+    #
     password_hash = db.Column(db.String(128))
     department_id = db.Column(db.Integer, db.ForeignKey('departments.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
@@ -85,3 +96,67 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role: {}>'.format(self.name)
+
+class Salary(db.Model):
+    """
+    Create a Salary table
+    """
+
+    __tablename__ = 'salaries'
+
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(60), unique=True)
+    index = db.Column(db.String(60), unique=True)
+    rate = db.Column(db.String(60), unique=True)
+    date = db.Column(db.DateTime, index=True)    
+    status = db.Column(db.Boolean, default=True)                                  #True: next salary, False: current salary
+    employee_id = db.Column(db.Integer, db.ForeignKey('employees.id'))
+
+    def __repr__(self):
+        return '<Salary: {}>'.format(self.name)
+
+class SalaryCode(db.Model):
+    """
+    Create a SalaryCode table
+    """
+
+    __tablename__ = 'salarycodes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    cur_code = db.Column(db.String(60), unique=True)
+    next_code = db.Column(db.String(60), unique=True)
+    notes = db.Column(db.String(256), index=True)
+
+    def __repr__(self):
+        return '<SalaryCode: {}>'.format(self.name)
+
+class SalaryIndex(db.Model):
+    """
+    Create a SalaryIndex table
+    """
+
+    __tablename__ = 'salaryindexs'
+
+    id = db.Column(db.Integer, primary_key=True)
+    cur_index = db.Column(db.String(60), unique=True)
+    next_index = db.Column(db.String(60), unique=True)
+    notes = db.Column(db.String(256), index=True)
+
+    def __repr__(self):
+        return '<SalaryIndex: {}>'.format(self.name)
+
+class SalaryRate(db.Model):
+    """
+    Create a SalaryRate table
+    """
+
+    __tablename__ = 'salaryrates'
+
+    id = db.Column(db.Integer, primary_key=True)
+    cur_rate = db.Column(db.String(60), unique=True)
+    next_rate = db.Column(db.String(60), unique=True)
+    notes = db.Column(db.String(256), index=True)
+
+    def __repr__(self):
+        return '<SalaryRate: {}>'.format(self.name)
+
