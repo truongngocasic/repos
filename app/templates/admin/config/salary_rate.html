@@ -1,0 +1,51 @@
+<!-- app/templates/admin/config/salary_rate.html -->
+
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+{% block title %}
+{% endblock %}
+{% block body %}
+<div class="content-section">
+ <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div class="center">
+            {{ wtf.quick_form(form) }}
+        </div>
+        <div class="other_center">
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th width="15%"> Current Salary Rate</th>
+                  <th width="40%"> Next Salary Rate</th>
+                  <th width="15%"> Notes</th>
+                  <th width="15%"> Edit </th>
+                  <th width="15%"> Delete </th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for salaryrate in salalyrates %}
+                <tr>
+                  <td> {{ salaryrate.cur_rate}} </td>
+                  <td> {{ salaryrate.next_rate}} </td>
+                  <td> {{ salaryrate.notes}} </td>
+                  <td>
+                    <a href="#">
+                      <i class="fa fa-pencil"></i> Edit 
+                    </a>
+                  </td>
+                  <td>
+                    <a href="#">
+                      <i class="fa fa-trash"></i> Delete 
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
