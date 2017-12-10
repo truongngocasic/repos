@@ -33,30 +33,12 @@ class EmployeeAssignForm(FlaskForm):
                             get_label="name")
     submit = SubmitField('Submit')
 
-class SalaryCodeForm(FlaskForm):
+class SalaryConfigForm(FlaskForm):
     """
-    Form for admin to add or edit salary code
+    Form for admin to add or edit salary code/index/rate
     """
-    cur_code = StringField('Current Code', validators=[DataRequired()])
-    next_code = StringField('Next Code', validators=[DataRequired()])
-    notes = StringField('Notes', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-class SalaryIndexForm(FlaskForm):
-    """
-    Form for admin to add or edit salary index
-    """
-    cur_index = StringField('Current Index', validators=[DataRequired()])
-    next_index = StringField('Next Index', validators=[DataRequired()])
-    notes = StringField('Notes', validators=[DataRequired()])
-    submit = SubmitField('Submit')
-
-class SalaryRateForm(FlaskForm):
-    """
-    Form for admin to add or edit salary rate
-    """
-    cur_rate = StringField('Current Rate', validators=[DataRequired()])
-    next_rate = StringField('Next Rate', validators=[DataRequired()])
+    cur_cfg = StringField('Current', validators=[DataRequired()])
+    next_cfg = StringField('Next', validators=[DataRequired()])
     notes = StringField('Notes', validators=[DataRequired()])
     submit = SubmitField('Submit')
 

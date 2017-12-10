@@ -1,11 +1,11 @@
 # app/admin/views.py
 
-from flask import abort, flash, redirect, render_template, url_for
+from flask import abort, flash, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 
 
 from . import admin
-from forms import DepartmentForm, RoleForm, EmployeeAssignForm, SalaryCodeForm, SalaryIndexForm, SalaryRateForm
+from forms import DepartmentForm, RoleForm, EmployeeAssignForm, SalaryConfigForm
 from .. import db
 from ..models import Department, Role, Employee, Salary, SalaryCode, SalaryIndex, SalaryRate
 
@@ -236,94 +236,107 @@ def assign_employee(id):
                            employee=employee, form=form,
                            title='Assign Employee')
 
-@admin.route('/config/salary_code', methods=['GET', 'POST'])
+@admin.route('/config/salary_cfg', methods=['GET', 'POST'])
 @login_required
-def cfg_salary_code():
+def salary_cfg():
     """
     Config salary code
     """
     check_admin()
 
-    form = SalaryCodeForm()
+    cfg_type = request.args.get('cfg_type');
+    form = SalaryConfigForm()
+
     if form.validate_on_submit():
-        salary_code = SalaryCode(cur_code=form.cur_code.data,
-                    next_code=form.next_code.data,
-                    notes=form.notes.data)
+        if (cfg_type == 'salary_code'):
+            salary_cfg = SalaryCode(cur_cfg=form.cur_cfg.data,
+                        next_cfg=form.next_cfg.data,
+                        notes=form.notes.data)
+        elif (cfg_type == 'salary_index'): 
+            salary_cfg = SalaryIndex(cur_cfg=form.cur_cfg.data,
+                        next_cfg=form.next_cfg.data,
+                        notes=form.notes.data)
+        else:
+            salary_cfg = SalaryRate(cur_cfg=form.cur_cfg.data,
+                        next_cfg=form.next_cfg.data,
+                        notes=form.notes.data)
 
         try:
             # add role to the database
-            db.session.add(salary_code)
+            db.session.add(salary_cfg)
             db.session.commit()
             flash('You have successfully added a new salary code.')
         except:
             # in case role name already exists
-            flash('Error: salary code already exists.')
+            flash('Error: ' + cfg_type + ' already exists.')
 
         # redirect to the roles page
-        return redirect(url_for('admin.list_roles'))
+        return redirect(url_for('admin.salary_cfg', cfg_type=cfg_type))
 
-    # load role template
-    salalycodes = SalaryCode.query.all()
-    return render_template('admin/config/salary_code.html', form=form, salalycodes=salalycodes, title='Add Salary Code')
+    # load template
+    if (cfg_type == 'salary_code'):
+        salary_cfgs = SalaryCode.query.all()
+        col_name = 'Code'
+    elif (cfg_type == 'salary_index'): 
+        salary_cfgs = SalaryIndex.query.all()
+        col_name = 'Index'
+    else:
+        salary_cfgs = SalaryRate.query.all()
+        col_name = 'Rate'
+    return render_template('admin/config/salary_cfg.html', form=form, salary_cfgs=salary_cfgs, col_name=col_name, cfg_type=cfg_type, title='Add Salary Config')
 
-@admin.route('/config/salary_index', methods=['GET', 'POST'])
+@admin.route('/config/salary_cfg/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
-def cfg_salary_index():
+def salary_cfg_delete(id):
     """
-    Config salary index
+    Delete a salary config from the database
     """
     check_admin()
 
-    form = SalaryIndexForm()
-    if form.validate_on_submit():
-        salary_index = SalaryIndex(cur_index=form.cur_index.data,
-                    next_index=form.next_index.data,
-                    notes=form.notes.data)
+    cfg_type = request.args.get('cfg_type');
+    if (cfg_type == 'salary_code'):
+        salary_cfg = SalaryCode.query.get_or_404(id)
+    elif (cfg_type == 'salary_index'): 
+        salary_cfg = SalaryIndex.query.get_or_404(id)
+    else:
+        salary_cfg = SalaryRate.query.get_or_404(id)
 
-        try:
-            # add role to the database
-            db.session.add(salary_index)
-            db.session.commit()
-            flash('You have successfully added a new salary index.')
-        except:
-            # in case role name already exists
-            flash('Error: salary index already exists.')
+    db.session.delete(salary_cfg)
+    db.session.commit()
+    flash('You have successfully deleted the salary cfg.')
 
-        # redirect to the roles page
-        return redirect(url_for('admin.list_roles'))
+    # redirect to the salary_cfg page
+    return redirect(url_for('admin.salary_cfg', cfg_type=cfg_type))
 
-    # load role template
-    salalyindexs = SalaryIndex.query.all()
-    return render_template('admin/config/salary_index.html', form=form, salalyindexs=salalyindexs, title='Add Salary Index')
+    return render_template(title="Delete Salary Config")
 
-@admin.route('/config/salary_rate', methods=['GET', 'POST'])
+@admin.route('/config/salary_cfg/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
-def cfg_salary_rate():
+def salary_cfg_edit(id):
     """
-    Config salary rate
+    Edit a salary config from the database
     """
     check_admin()
 
-    form = SalaryRateForm()
+    cfg_type = request.args.get('cfg_type');
+    if (cfg_type == 'salary_code'):
+        salary_cfg = SalaryCode.query.get_or_404(id)
+    elif (cfg_type == 'salary_index'): 
+        salary_cfg = SalaryIndex.query.get_or_404(id)
+    else:
+        salary_cfg = SalaryRate.query.get_or_404(id)
+
+    form = SalaryConfigForm(obj=salary_cfg)
     if form.validate_on_submit():
-        salary_rate = SalaryRate(cur_rate=form.cur_rate.data,
-                    next_rate=form.next_rate.data,
-                    notes=form.notes.data)
+        salary_cfg.cur_cfg  = form.cur_cfg.data
+        salary_cfg.next_cfg = form.next_cfg.data
+        salary_cfg.notes    = form.notes.data
+        db.session.add(salary_cfg)
+        db.session.commit()
+        flash('You have successfully edited the salary cfg.')
 
-        try:
-            # add role to the database
-            db.session.add(salary_rate)
-            db.session.commit()
-            flash('You have successfully added a new salary rate.')
-        except:
-            # in case role name already exists
-            flash('Error: salary rate already exists.')
+        # redirect to the salary_cfg page
+        return redirect(url_for('admin.salary_cfg', cfg_type=cfg_type))
 
-        # redirect to the roles page
-        return redirect(url_for('admin.list_roles'))
-
-    # load role template
-    salalyrates = SalaryRate.query.all()
-    return render_template('admin/config/salary_index.html', form=form, salalyrates=salalyrates, title='Add Salary Index')
-    return render_template('admin/config/salary_rate.html', form=form, title='Add Salary Rate')
+    return render_template('admin/config/salary_edit.html', form=form, title='Edit Salary Config')
 

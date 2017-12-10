@@ -123,8 +123,8 @@ class SalaryCode(db.Model):
     __tablename__ = 'salarycodes'
 
     id = db.Column(db.Integer, primary_key=True)
-    cur_code = db.Column(db.String(60), unique=True)
-    next_code = db.Column(db.String(60), unique=True)
+    cur_cfg = db.Column(db.String(60), unique=True)
+    next_cfg = db.Column(db.String(60), unique=True)
     notes = db.Column(db.String(256), index=True)
 
     def __repr__(self):
@@ -138,8 +138,8 @@ class SalaryIndex(db.Model):
     __tablename__ = 'salaryindexs'
 
     id = db.Column(db.Integer, primary_key=True)
-    cur_index = db.Column(db.String(60), unique=True)
-    next_index = db.Column(db.String(60), unique=True)
+    cur_cfg = db.Column(db.String(60), unique=True)
+    next_cfg = db.Column(db.String(60), unique=True)
     notes = db.Column(db.String(256), index=True)
 
     def __repr__(self):
@@ -153,8 +153,8 @@ class SalaryRate(db.Model):
     __tablename__ = 'salaryrates'
 
     id = db.Column(db.Integer, primary_key=True)
-    cur_rate = db.Column(db.String(60), unique=True)
-    next_rate = db.Column(db.String(60), unique=True)
+    cur_cfg = db.Column(db.String(60), unique=True)
+    next_cfg = db.Column(db.String(60), unique=True)
     notes = db.Column(db.String(256), index=True)
 
     def __repr__(self):
