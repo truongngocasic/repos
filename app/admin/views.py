@@ -236,6 +236,24 @@ def assign_employee(id):
                            employee=employee, form=form,
                            title='Assign Employee')
 
+@admin.route('/employees/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_employee(id):
+    """
+    Delete an employee from the database
+    """
+    check_admin()
+
+    employee = Employee.query.get_or_404(id)
+    db.session.delete(employee)
+    db.session.commit()
+    flash('You have successfully deleted the employee.')
+
+    # redirect to the roles page
+    return redirect(url_for('admin.list_employees'))
+
+    return render_template(title="Delete Employee")
+
 @admin.route('/config/salary_cfg', methods=['GET', 'POST'])
 @login_required
 def salary_cfg():

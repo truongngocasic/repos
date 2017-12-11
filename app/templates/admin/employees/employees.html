@@ -22,6 +22,7 @@
                   <th width="30%"> Department </th>
                   <th width="30%"> Role </th>
                   <th width="15%"> Assign </th>
+                  <th width="15%"> Delete </th>
                 </tr>
               </thead>
               <tbody>
@@ -29,6 +30,7 @@
                 {% if employee.is_admin %}
                     <tr style="background-color: #aec251; color: white;">
                         <td> <i class="fa fa-key"></i> Admin </td>
+                        <td> N/A </td>
                         <td> N/A </td>
                         <td> N/A </td>
                         <td> N/A </td>
@@ -51,9 +53,10 @@
                         {% endif %}
                       </td>
                       <td>
-                        <a href="{{ url_for('admin.assign_employee', id=employee.id) }}">
-                          <i class="fa fa-user-plus"></i> Assign
-                        </a>
+                        <a href="{{ url_for('admin.assign_employee', id=employee.id) }}"> <i class="fa fa-user-plus"></i> Assign </a>
+                      </td>
+                      <td>
+                        <a href="{{ url_for('admin.delete_employee', id=employee.id) }}"> <i class="fa fa-user-plus"></i> Delete </a>
                       </td>
                     </tr>
                 {% endif %}

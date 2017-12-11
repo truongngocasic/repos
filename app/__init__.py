@@ -37,15 +37,23 @@ def create_app(config_name):
 
     from app import models
 
+    #For admin pages
     from .admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix='/admin')
 
+    #For auth pages
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
 
+    #For home pages
     from .home import home as home_blueprint
     app.register_blueprint(home_blueprint)
 
+    #For thidua pages
+    from .thidua import thidua as thidua_blueprint
+    app.register_blueprint(thidua_blueprint, url_prefix='/thidua')
+
+    #For error pages handler
     @app.errorhandler(403)
     def forbidden(error):
         return render_template('errors/403.html', title='Forbidden'), 403
